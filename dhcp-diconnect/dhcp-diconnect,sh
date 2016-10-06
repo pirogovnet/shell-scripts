@@ -1,0 +1,55 @@
+#!/usr/local/bin/bash
+
+NUM_TREADS=5
+#NUM_SUBS_PER_TREAD=10
+
+echo "#################################################"
+echo "# Get the session information from the node     #"
+echo "#################################################"
+snmpwalk -v2c -c public@clips1 10.126.74.198  1.3.6.1.4.1.2352.2.27.1.1.1.1 > active-subs.txt
+echo "#################################################"
+echo "# Filter on clips subs/mac address by grep on mac starting with 00:10             #"
+echo "#################################################"
+
+
+#####grep 00:10 active-subs.txt > active-clips-subs.txt
+
+
+echo "#################################################"
+echo "# Extract the session-id                        #"
+echo "#################################################"
+
+
+#####cut -c75-99 active-clips-subs.txt > sub-session-id
+cut -c75-99 active-subs.txt > sub-session-id
+
+DHCP_SUBS_TOTAL=$(wc -l < sub-session-id)
+echo "DHCP_SUBS_TOTAL = $DHCP_SUBS_TOTAL"
+
+NUM_SUBS_PER_TREAD=$((DHCP_SUBS_TOTAL/NUM_TREADS))
+echo "NUM_SUBS_PER_TREAD=$NUM_SUBS_PER_TREAD"
+
+# sed -n '1,$NUM_SUBS_PER_TREAD p' sub-session-id
+
+
+
+for (( c=1; c<=$NUM_TREADS; c++ ));
+do
+{
+    #echo "$((NUM_SUBS_PER_TREAD*c))"
+   START_LINE=$((NUM_SUBS_PER_TREAD*(c-1)+1))
+   END_LINE=$((NUM_SUBS_PER_TREAD*c))
+    #echo "START_LINE=$START_LINE, END_LINE=$END_LINE"
+   sed -n "$START_LINE,$END_LINE p" sub-session-id > $c.temp
+
+#-----
+while read i; do echo bounced -n "$i";  snmpset -v2c -c public@clips1  10.126.74.198 .1.3.6.1.4.1.2352.2.27.1.1.3.9.0 u 1 1.3.6.1.4.1.2352.2.27.1.1.3.4.0 s $i & done < $c.temp
+
+#----
+
+} & done;
+WAITPIDS="$WAITPIDS "$!;...; wait $WAITPIDS
+echo "Script has finished
+
+Exit 1
+
