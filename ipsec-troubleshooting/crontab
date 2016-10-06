@@ -1,0 +1,6 @@
+cat /etc/crontab 
+#console log and log rotation
+*/30 * * * * root     /home/ericsson/debug/deb-mac.sh
+*/15 * * * * root     /home/ericsson/debug/15-min-tcpdump.sh
+*/10 * * * * root     /home/ericsson/debug/deb-tunnel-tanet.sh
+02 4 * * * root       /home/ericsson/debug/log-rotate.sh
