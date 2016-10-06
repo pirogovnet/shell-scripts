@@ -1,0 +1,2 @@
+User-Name= 71000986@hinet.net
+Dynamic-QoS-Param = "police-circuit-rate rate-absolute 1000 parent"
