@@ -1,5 +1,7 @@
 #!/usr/local/bin/bash
 
+#task - stress test to disconect DHCP subscibers via SNMP 
+
 NUM_TREADS=5
 #NUM_SUBS_PER_TREAD=10
 
