@@ -1,6 +1,7 @@
 #!/usr/bin/perl  -w
 
-
+#task - change BW for N subscribers. 
+#change of athentication stress test 
 
     for($i=71000001;$i<= 71008101;$i++) {
 
